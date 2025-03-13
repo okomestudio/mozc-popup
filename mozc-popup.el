@@ -117,17 +117,19 @@
          (popup-make-item footer-label :face 'mozc-cand-overlay-footer-face)
          t))
 
-      (mozc-cand-popup-clear)
-      (setq mozc-cand-popup (popup-create
-                             mozc-preedit-point-origin
-                             max-width (length items)
-                             :around t
-                             :margin-left 1
-                             :margin-right 1
-                             :selection-face (if focused-index
-                                                 'mozc-cand-overlay-focused-face
-                                               'mozc-cand-overlay-footer-face)
-                             :summary-face 'mozc-cand-overlay-description-face))
+      (when (null mozc-cand-popup)
+				(setq mozc-cand-popup
+							(popup-create mozc-preedit-point-origin
+														max-width
+														(length items)
+														:around t
+														:margin-left 1
+														:margin-right 1
+														:selection-face (if focused-index
+																								'mozc-cand-overlay-focused-face
+																							'mozc-cand-overlay-footer-face)
+														:summary-face 'mozc-cand-overlay-description-face)))
+
       (popup-set-list mozc-cand-popup items)
       (if focused-index
           (popup-select mozc-cand-popup (% focused-index 9))
@@ -145,7 +147,8 @@
      (mozc-cand-echo-area-update candidates))))
 
 (defun mozc-cand-popup-clear ()
-  (popup-delete mozc-cand-popup))
+  (popup-delete mozc-cand-popup)
+	(setq mozc-cand-popup nil))
 
 (defun mozc-cand-popup-clean-up ()
   (mozc-cand-popup-clear))
